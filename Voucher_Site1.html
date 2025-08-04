@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Voucher Hamid City Tour</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f0f5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #8e2c65;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      color: white;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #27ae60;
+      color: white;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #219150;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🎫 Generatore Voucher</h2>
+  <input id="name" placeholder="Nome e Cognome">
+  <input id="email" placeholder="Email">
+  <input id="phone" placeholder="Telefono">
+  <select id="tour">
+    <option value="Classic Tour">Classic Tour</option>
+    <option value="Grand Tour">Grand Tour</option>
+    <option value="Sunset Tour">Sunset Tour</option>
+  </select>
+  <input id="date" placeholder="Data Tour (gg/mm/aaaa)">
+  <input id="time" placeholder="Orario (hh:mm)">
+  <input id="adults" placeholder="N° Adulti">
+  <input id="youth" placeholder="N° Ragazzi (6-17 anni)">
+  <input id="kids" placeholder="N° Bambini (0-5 anni)">
+  <button onclick="generateStyledVoucher()">🎟️ Genera PDF</button>
+</div>
+
+<script>
+  async function generateStyledVoucher() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const name = document.getElementById("name").value || "N/D";
+    const email = document.getElementById("email").value || "N/D";
+    const phone = document.getElementById("phone").value || "N/D";
+    const tour = document.getElementById("tour").value || "N/D";
+    const date = document.getElementById("date").value || "N/D";
+    const time = document.getElementById("time").value || "N/D";
+    const adults = document.getElementById("adults").value || "0";
+    const youth = document.getElementById("youth").value || "0";
+    const kids = document.getElementById("kids").value || "0";
+    const voucherCode = "RCT-" + Math.floor(100000 + Math.random() * 900000);
+
+    const logoUrl = "https://i.postimg.cc/fRC7dP8b/golf-cart.png";
+
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.src = logoUrl;
+
+    img.onload = function () {
+      // Logo più piccolo e centrato
+      doc.addImage(img, "PNG", 80, 12, 50, 25);
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(15);
+      doc.text(" HAMID CITY TOUR - VOUCHER", 20, 45);
+
+      // Box elegante
+      doc.setDrawColor(141, 44, 140); // viola scuro
+      doc.setLineWidth(0.7);
+      doc.roundedRect(15, 50, 180, 130, 5, 5, 'D');
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+
+      let y = 60;
+      const spacing = 9;
+      doc.text(` Voucher Code: ${voucherCode}`, 20, y); y += spacing;
+      doc.text(` Nome: ${name}`, 20, y); y += spacing;
+      doc.text(` Email: ${email}`, 20, y); y += spacing;
+      doc.text(` Telefono: ${phone}`, 20, y); y += spacing;
+      doc.text(` Tour: ${tour}`, 20, y); y += spacing;
+      doc.text(` Data: ${date}`, 20, y);
+      doc.text(` Orario: ${time}`, 120, y); y += spacing;
+      doc.text(` Adulti: ${adults}   Ragazzi: ${youth}   Bambini: ${kids}`, 20, y); y += 15;
+
+      doc.setFont("helvetica", "italic");
+      doc.setTextColor(85, 85, 85);
+      doc.text("Grazie per aver scelto Regina City Tour!", 20, y + 10);
+
+      doc.save(`voucher_${voucherCode}.pdf`);
+    };
+
+    img.onerror = function () {
+      alert("Errore nel caricamento del logo.");
+    };
+  }
+</script>
+
+</body>
+</html>
